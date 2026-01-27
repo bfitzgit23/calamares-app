@@ -51,18 +51,15 @@ makedepends=(
   python-unidecode
   qt6-tools
 )
-backup=('usr/share/calamares/modules/bootloader.conf'
-        'usr/share/calamares/modules/displaymanager.conf'
-        'usr/share/calamares/modules/initcpio.conf'
-        'usr/share/calamares/modules/unpackfs.conf')
+# backup=('usr/share/calamares/modules/bootloader.conf'
+#         'usr/share/calamares/modules/displaymanager.conf'
+#         'usr/share/calamares/modules/initcpio.conf'
+#         'usr/share/calamares/modules/unpackfs.conf')
 
-source=($pkgname::git+$url#commit=c9e4998865
-	"calamares.desktop"
-	"calamares_polkit")
+# Files calamares.desktop and calamares_polkit are included in the git repo
+source=("$pkgname::git+$url")
 
-sha256sums=('SKIP'
-            'SKIP'
-            'SKIP')
+sha256sums=('SKIP')
 
 prepare() {
 
@@ -75,7 +72,7 @@ prepare() {
 # 	sed -i -e "s/desired_size = 512 \* 1024 \* 1024  \# 512MiB/desired_size = 512 \* 1024 \* 1024 \* 4  \# 2048MiB/" "$srcdir/$pkgname/src/modules/fstab/main.py"
 
 	cd $pkgname
-	sed -i -e "s|CALAMARES_VERSION 3.3.6|CALAMARES_VERSION $pkgver-$pkgrel|g" CMakeLists.txt
+	sed -i -e "s|CALAMARES_VERSION 3.4.1|CALAMARES_VERSION $pkgver-$pkgrel|g" CMakeLists.txt
 }
 
 build() {
@@ -117,8 +114,12 @@ build() {
 package() {
 	cd $pkgname/build
 	DESTDIR="${pkgdir}" cmake --build . --target install
-	install -Dm644 "$srcdir/calamares.desktop" "$pkgdir/etc/xdg/autostart/calamares.desktop"
-	install -Dm755 "$srcdir/calamares.desktop" "$pkgdir/home/liveuser/Desktop/calamares.desktop"
-	install -Dm755 "$srcdir/calamares_polkit" "$pkgdir/usr/bin/calamares_polkit"
-	rm "$pkgdir/usr/share/applications/calamares.desktop"
+
+	# Install desktop file and polkit helper from repo root
+	install -Dm644 "$srcdir/$pkgname/calamares.desktop" "$pkgdir/etc/xdg/autostart/calamares.desktop"
+	install -Dm755 "$srcdir/$pkgname/calamares.desktop" "$pkgdir/home/liveuser/Desktop/calamares.desktop"
+	install -Dm755 "$srcdir/$pkgname/calamares_polkit" "$pkgdir/usr/bin/calamares_polkit"
+
+	# Remove default desktop file (we use our custom one)
+	rm -f "$pkgdir/usr/share/applications/calamares.desktop"
 }
