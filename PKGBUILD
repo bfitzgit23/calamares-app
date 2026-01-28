@@ -1,14 +1,14 @@
 #https://github.com/calamares/calamares/releases
 #change prepare number too
 
-pkgname=calamaresx-app
+pkgname=calamares-app
 _pkgname=calamares
 pkgver=3.4.0
 pkgrel=15
 pkgdesc='Distribution-independent installer framework'
 arch=('x86_64')
 license=(GPL)
-url="https://github.com/XeroLinuxDev/calamaresx-app.git"
+url="https://github.com/bfitzgit23/calamares-app.git"
 license=('LGPL')
 provides=('calamares')
 depends=(
